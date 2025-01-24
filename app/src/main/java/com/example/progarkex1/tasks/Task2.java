@@ -53,7 +53,7 @@ public class Task2 extends Task1 {
         Canvas can = surHolder.lockCanvas();
         if (can != null) {
             can.drawColor(Color.BLACK);
-            can.drawBitmap(helicopter.getSprite(), helicopter.getX(), helicopter.getY(), null);
+            can.drawBitmap(helicopter.getSpriteSimple(), helicopter.getX(), helicopter.getY(), null);
             String positionText = String.format(Locale.forLanguageTag("nb-NO"),
                     "X: %.1f, Y: %.1f", helicopter.getX(), helicopter.getY());
             can.drawText(positionText, 20, 100, textPaint);
@@ -62,7 +62,7 @@ public class Task2 extends Task1 {
     }
 
     @Override
-    public void update() {
+    public void update(double delta) {
         float dx = targetX - helicopter.getX();
         float dy = targetY - helicopter.getY();
 
@@ -71,8 +71,8 @@ public class Task2 extends Task1 {
 
         if (distance > speed) {
             helicopter.setPosition(
-                    helicopter.getX() + (dx / distance) * speed,
-                    helicopter.getY() + (dy / distance) * speed,
+                    (float) (helicopter.getX() + (dx / distance) * speed * delta * 60),
+                    (float) (helicopter.getY() + (dy / distance) * speed * delta * 60),
                     screenWidth,
                     screenHeight
             );

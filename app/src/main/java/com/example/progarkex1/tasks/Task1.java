@@ -28,13 +28,13 @@ public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
         Canvas can = surHolder.lockCanvas();
         if (can != null) {
             can.drawColor(Color.BLACK);
-            can.drawBitmap(helicopter.getSprite(), helicopter.getX(), helicopter.getY(), null);
+            can.drawBitmap(helicopter.getSpriteSimple(), helicopter.getX(), helicopter.getY(), null);
             surHolder.unlockCanvasAndPost(can);
         }
     }
 
-    public void update() {
-        helicopter.move();
+    public void update(double delta) {
+        helicopter.move(delta);
     }
 
     @Override
