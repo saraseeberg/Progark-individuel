@@ -46,5 +46,10 @@ public class Helicopter {
     public float getY() {
         return y;
     }
+
+    public void setPosition(float x, float y, int screenWidth, int screenHeight) {
+        this.x = Math.max(0, Math.min(x, screenWidth - width));
+        this.y = Math.max(0, Math.min(y, screenHeight - height));
+    }
 }
 

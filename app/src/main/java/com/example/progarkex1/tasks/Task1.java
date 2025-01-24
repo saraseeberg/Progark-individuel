@@ -12,9 +12,9 @@ import com.example.progarkex1.GameLoop;
 import com.example.progarkex1.classes.Helicopter;
 
 public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
-    private SurfaceHolder surHolder;
-    private GameLoop gameLoop;
-    private Helicopter helicopter;
+    public SurfaceHolder surHolder;
+    public GameLoop gameLoop;
+    public Helicopter helicopter;
 
     public Task1(Context context) {
         super(context);
@@ -50,6 +50,5 @@ public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
     }
 }
