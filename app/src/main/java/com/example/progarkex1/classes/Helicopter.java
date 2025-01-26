@@ -83,21 +83,18 @@ public class Helicopter {
         float dx = (other.x + other.width / 2f) - (this.x + this.width / 2f);
         float dy = (other.y + other.height / 2f) - (this.y + this.height / 2f);
 
-        // Normalize the vector
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
-        if (distance == 0) return; // Avoid division by zero
+        if (distance == 0) return;
 
         dx /= distance;
         dy /= distance;
 
-        // Adjust positions to prevent overlap
         float overlap = (width + other.width) / 2f - distance;
         this.x -= dx * overlap / 2f;
         this.y -= dy * overlap / 2f;
         other.x += dx * overlap / 2f;
         other.y += dy * overlap / 2f;
 
-        // Preserve the speed magnitude while reversing directions
         float thisSpeedMagnitude = (float) Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
         float otherSpeedMagnitude = (float) Math.sqrt(other.speedX * other.speedX + other.speedY * other.speedY);
 
@@ -107,7 +104,6 @@ public class Helicopter {
         other.speedX = dx * otherSpeedMagnitude;
         other.speedY = dy * otherSpeedMagnitude;
 
-        // Update directions based on new velocities
         this.direction = this.speedX > 0 ? 1 : 0;
         other.direction = other.speedX > 0 ? 1 : 0;
     }

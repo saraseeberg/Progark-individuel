@@ -17,12 +17,11 @@ public class Task4 extends SurfaceView implements SurfaceHolder.Callback {
     private final Paddle paddleRight;
     private int scoreLeft = 0, scoreRight = 0;
     private final int winningScore = 21;
-    private final Paint paint = new Paint();
     private boolean isRunning = false;
     private Thread gameThread;
     private boolean isGameOver = false;
     private String winningText = "";
-    private final Paint winningPaint = new Paint();
+    private final Paint paint = new Paint();
     private final Paint leftPaddlePaint = new Paint();
     private final Paint rightPaddlePaint = new Paint();
 
@@ -40,8 +39,6 @@ public class Task4 extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.WHITE);
         paint.setTextSize(50);
 
-        winningPaint.setColor(Color.WHITE);
-        winningPaint.setTextSize(90);
 
         leftPaddlePaint.setColor(Color.MAGENTA);
         leftPaddlePaint.setTextSize(50);
@@ -53,7 +50,7 @@ public class Task4 extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         isRunning = true;
-        gameThread = new Thread(() -> {
+                gameThread = new Thread(() -> {
             while (isRunning) {
                 long startTime = System.currentTimeMillis();
 
@@ -123,8 +120,18 @@ public class Task4 extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawText("Score: " + scoreRight, getWidth() - 300, 100, paint);
 
             if (isGameOver) {
+                Paint winningPaint = new Paint();
+                winningPaint.setColor(Color.WHITE);
+                winningPaint.setTextSize(90);
+
+                Paint playAgainPaint = new Paint();
+                playAgainPaint.setColor(Color.WHITE);
+                playAgainPaint.setTextSize(50);
+
                 canvas.drawText("Game Over!", getWidth() / 2f - (winningPaint.measureText("Game Over!") / 2) , getHeight() / 2f - 500, winningPaint);
                 canvas.drawText(winningText, getWidth() / 2f - (winningPaint.measureText(winningText) / 2), getHeight() / 2f - 300, winningPaint);
+                canvas.drawText("Press anywhere on the screen to play again", getWidth() / 2f - (playAgainPaint.measureText("Press anywhere on the screen to play again") / 2), getHeight() / 2f + 300, playAgainPaint);
+
             }
 
             getHolder().unlockCanvasAndPost(canvas);
@@ -133,15 +140,24 @@ public class Task4 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isGameOver) {
+            reset();
+        }
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             float touchY = event.getY();
 
-            if (event.getX() < getWidth() / 2) {
+            if (event.getX() < (float) getWidth() / 2) {
                 paddleLeft.move(touchY - paddleLeft.getY());
             } else {
                 paddleRight.move(touchY - paddleRight.getY());
             }
         }
         return true;
+    }
+
+    public void reset() {
+        isGameOver = false;
+        scoreLeft = 0;
+        scoreRight = 0;
     }
 }
