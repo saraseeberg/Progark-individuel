@@ -34,7 +34,7 @@ public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update(double delta) {
-        helicopter.move(delta);
+        helicopter.moveTask1();
     }
 
     @Override
