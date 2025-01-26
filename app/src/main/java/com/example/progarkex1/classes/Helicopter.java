@@ -36,6 +36,18 @@ public class Helicopter {
         return vehicle.getSprite(direction, aniIndex);
     }
 
+    public void moveTask1() {
+        x += speedX;
+        y += speedY;
+
+        if (x < 0 || x > 1080 - width) {
+            speedX = -speedX;
+            direction = (speedX > 0) ? 1 : 0;
+        }
+        if (y < 0 || y > 2400 - height) {
+            speedY = -speedY;
+        }
+    }
 
     public void move(double delta) {
         x += (float) (speedX * delta * 60);

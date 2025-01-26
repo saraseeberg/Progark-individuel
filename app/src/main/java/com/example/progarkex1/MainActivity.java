@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         gameContext = this;
         EdgeToEdge.enable(this);
-        setContentView(new Task2(this));
+        setContentView(new Task4(this));
     }
 
     public static Context getGameContext() {
