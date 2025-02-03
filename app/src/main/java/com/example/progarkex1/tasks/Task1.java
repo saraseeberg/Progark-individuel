@@ -12,16 +12,25 @@ import com.example.progarkex1.GameLoop;
 import com.example.progarkex1.classes.Helicopter;
 
 public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
+    private static Task1 instance;
     public SurfaceHolder surHolder;
-    public GameLoop gameLoop;
     public Helicopter helicopter;
 
     public Task1(Context context) {
         super(context);
+        if (instance == null) {
+            instance = this;
+        } else {
+            throw new IllegalStateException("Just one state!!");
+        }
+
         surHolder = getHolder();
         surHolder.addCallback(this);
         helicopter = new Helicopter();
-        gameLoop = new GameLoop(this);
+    }
+
+    public static synchronized Task1 getInstance() {
+        return instance;
     }
 
     public void render() {
@@ -39,8 +48,7 @@ public class Task1 extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        gameLoop.startGameLoop();
-
+        GameLoop.getInstance().startGameLoop();
     }
 
     @Override
