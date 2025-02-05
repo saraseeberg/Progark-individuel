@@ -1,6 +1,6 @@
 package com.example.progarkex1;
 
-import com.example.progarkex1.tasks.Task1;
+import com.example.progarkex1.tasks.GamePanel;
 
 public class GameLoop implements Runnable{
 
@@ -25,8 +25,8 @@ public class GameLoop implements Runnable{
         while (true) {
             long startTime = System.currentTimeMillis();
 
-            Task1.getInstance().update();
-            Task1.getInstance().render();
+            GamePanel.getInstance().update();
+            GamePanel.getInstance().render();
 
             long deltaTime = System.currentTimeMillis() - startTime;
             if (deltaTime < 16) {

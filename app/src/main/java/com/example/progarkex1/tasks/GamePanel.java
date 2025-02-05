@@ -7,20 +7,36 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.example.progarkex1.GameLoop;
+import com.example.progarkex1.classes.Helicopter;
+
 import java.util.Locale;
 
-public class Task2 extends GamePanel {
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+    private static GamePanel instance;
+    public SurfaceHolder surHolder;
+    public Helicopter helicopter;
     private final Paint textPaint;
     private int screenWidth;
     private int screenHeight;
     private float targetX;
     private float targetY;
 
-    public Task2(Context context) {
+    public GamePanel(Context context) {
         super(context);
+        if (instance == null) {
+            instance = this;
+        } else {
+            throw new IllegalStateException("Just one state!!");
+        }
+
+        surHolder = getHolder();
+        surHolder.addCallback(this);
+        helicopter = new Helicopter();
 
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
@@ -30,25 +46,10 @@ public class Task2 extends GamePanel {
         targetY = helicopter.getY();
     }
 
-    @Override
-    public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        super.surfaceCreated(holder);
-        screenWidth = getWidth();
-        screenHeight = getHeight();
+    public static synchronized GamePanel getInstance() {
+        return instance;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-            targetX = event.getX();
-            targetY = event.getY();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void render() {
         Canvas can = surHolder.lockCanvas();
         if (can != null) {
@@ -61,7 +62,6 @@ public class Task2 extends GamePanel {
         }
     }
 
-    @Override
     public void update() {
         float dx = targetX - helicopter.getX();
         float dy = targetY - helicopter.getY();
@@ -81,4 +81,30 @@ public class Task2 extends GamePanel {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+            targetX = event.getX();
+            targetY = event.getY();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        GameLoop.getInstance().startGameLoop();
+        screenWidth = getWidth();
+        screenHeight = getHeight();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+    }
 }
