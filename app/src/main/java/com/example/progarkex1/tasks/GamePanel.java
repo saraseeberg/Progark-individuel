@@ -13,18 +13,23 @@ import androidx.annotation.NonNull;
 
 import com.example.progarkex1.GameLoop;
 import com.example.progarkex1.classes.Helicopter;
+import com.example.progarkex1.ecs.Entity;
+import com.example.progarkex1.ecs.MovementSystem;
+import com.example.progarkex1.ecs.PositionComponent;
+import com.example.progarkex1.ecs.TargetComponent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private static GamePanel instance;
     public SurfaceHolder surHolder;
-    public Helicopter helicopter;
     private final Paint textPaint;
-    private int screenWidth;
-    private int screenHeight;
-    private float targetX;
-    private float targetY;
+
+    private List<Entity> entities;
+    private MovementSystem movementSystem;
+    private Helicopter helicopter;
 
     public GamePanel(Context context) {
         super(context);
@@ -36,14 +41,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         surHolder = getHolder();
         surHolder.addCallback(this);
-        helicopter = new Helicopter();
 
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
 
-        targetX = helicopter.getX();
-        targetY = helicopter.getY();
+        entities = new ArrayList<>();
+        helicopter = new Helicopter();
+        entities.add(helicopter);
+
+        movementSystem = new MovementSystem(entities, getWidth(), getHeight());
     }
 
     public static synchronized GamePanel getInstance() {
@@ -54,39 +61,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         Canvas can = surHolder.lockCanvas();
         if (can != null) {
             can.drawColor(Color.BLACK);
-            can.drawBitmap(helicopter.getSprite(), helicopter.getX(), helicopter.getY(), null);
+
+            PositionComponent position = helicopter.getPosition();
+            can.drawBitmap(helicopter.getSprite(), position.x, position.y, null);
+
             String positionText = String.format(Locale.forLanguageTag("nb-NO"),
-                    "X: %.1f, Y: %.1f", helicopter.getX(), helicopter.getY());
+                    "X: %.1f, Y: %.1f", position.x, position.y);
             can.drawText(positionText, 20, 100, textPaint);
+
             surHolder.unlockCanvasAndPost(can);
         }
     }
 
     public void update() {
-        float dx = targetX - helicopter.getX();
-        float dy = targetY - helicopter.getY();
-
-        float distance = (float) Math.sqrt(dx * dx + dy * dy);
-        float speed = 10;
-
-        if (distance > speed) {
-            helicopter.setPosition(
-                    helicopter.getX() + (dx / distance) * speed,
-                    helicopter.getY() + (dy / distance) * speed,
-                    screenWidth,
-                    screenHeight
-            );
-        } else {
-            helicopter.setPosition(targetX, targetY, screenWidth, screenHeight);
-        }
+        movementSystem.update();
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-            targetX = event.getX();
-            targetY = event.getY();
+            TargetComponent target = helicopter.getTarget();
+            target.x = event.getX();
+            target.y = event.getY();
             return true;
         }
         return false;
@@ -95,8 +92,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         GameLoop.getInstance().startGameLoop();
-        screenWidth = getWidth();
-        screenHeight = getHeight();
+        movementSystem = new MovementSystem(entities, getWidth(), getHeight());
     }
 
     @Override

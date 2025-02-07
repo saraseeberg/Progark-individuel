@@ -2,39 +2,37 @@ package com.example.progarkex1.classes;
 
 import android.graphics.Bitmap;
 
+import com.example.progarkex1.ecs.TargetComponent;
 import com.example.progarkex1.entities.Vehicles;
+import com.example.progarkex1.ecs.Entity;
+import com.example.progarkex1.ecs.PositionComponent;
+import com.example.progarkex1.ecs.MovementComponent;
 
-public class Helicopter {
+public class Helicopter extends Entity {
 
     private final Vehicles vehicle;
-    private float x;
-    private float y;
     private final int width = 162;
     private final int height = 65;
-    private int direction;
+    private final int speed = 10;
 
     public Helicopter() {
         this.vehicle = Vehicles.HELICOPTER;
-        this.x = 0;
-        this.y = 0;
-        direction = 1;
+
+        addComponent(new PositionComponent(0, 0));
+        addComponent(new MovementComponent(speed, width, height));
+        addComponent(new TargetComponent(0, 0));
     }
 
     public Bitmap getSprite() {
-        return vehicle.getSprite(direction, 0);
+        return vehicle.getSprite(1, 0);
     }
 
-    public float getX() {
-        return x;
+    public PositionComponent getPosition() {
+        return getComponent(PositionComponent.class);
     }
 
-    public float getY() {
-        return y;
-    }
-
-    public void setPosition(float x, float y, int screenWidth, int screenHeight) {
-        this.x = Math.max(0, Math.min(x, screenWidth - width));
-        this.y = Math.max(0, Math.min(y, screenHeight - height));
+    public TargetComponent getTarget() {
+        return getComponent(TargetComponent.class);
     }
 }
 
